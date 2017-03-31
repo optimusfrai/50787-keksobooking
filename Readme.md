@@ -1,7 +1,7 @@
 # Личный проект «Кексобукинг» [![Build status][travis-image]][travis-url]
 
 * Студент: [Максим Гуляев](https://up.htmlacademy.ru/javascript/9/user/50787).
-* Наставник: `Неизвестно`.
+* Наставник: `Игорь Алексеенко`.
 
 ---
 
