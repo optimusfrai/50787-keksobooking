@@ -1,35 +1,47 @@
 var offerTitles = [
-  "Большая уютная квартира",
-  "Маленькая неуютная квартира",
-  "Огромный прекрасный дворец",
-  "Маленький ужасный дворец",
-  "Красивый гостевой домик",
-  "Некрасивый негостеприимный домик",
-  "Уютное бунгало далеко от моря",
-  "Неуютное бунгало по колено в воде"
+  'Большая уютная квартира',
+  'Маленькая неуютная квартира',
+  'Огромный прекрасный дворец',
+  'Маленький ужасный дворец',
+  'Красивый гостевой домик',
+  'Некрасивый негостеприимный домик',
+  'Уютное бунгало далеко от моря',
+  'Неуютное бунгало по колено в воде'
 ];
 
 var offerTypes = [
-  "flat",
-  "house",
-  "bungalo"
+  'flat',
+  'house',
+  'bungalo'
 ];
 
 var offerTimeSlots = [
-  "12:00",
-  "13:00",
-  "14:00"
+  '12:00',
+  '13:00',
+  '14:00'
 ];
 
 var offerFeatures = [
-  "wifi",
-  "dishwasher",
-  "parking",
-  "washer",
-  "elevator",
-  "conditioner"
+  'wifi',
+  'dishwasher',
+  'parking',
+  'washer',
+  'elevator',
+  'conditioner'
 ];
 
+var pinWidth = 56;
+var pinHeight = 75;
+var mapContainer = document.querySelector('.tokyo__pin-map');
+var dialog = document.querySelector('#offer-dialog');
+var template = document.querySelector('#lodge-template');
+
+/**
+ * Returns a random number between min and max
+ * @param {number} min Lower bound
+ * @param {number} [max] Upper bound
+ * @returns {number}
+ */
 function getRandomValue(min, max) {
   if (max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -38,14 +50,31 @@ function getRandomValue(min, max) {
   }
 }
 
+/**
+ * Returns string with leading zero
+ * @param {number} number
+ * @returns {string}
+ */
 function pad(number) {
-  return (number < 10) ? ("0" + number) : number;
+  return number < 10
+    ? '0' + number
+    : number.toString();
 }
 
+/**
+ * Returns random element of array
+ * @param {Array} array
+ * @returns {*}
+ */
 function getRandomElement(array) {
   return array[getRandomValue(0, array.length - 1)];
 }
 
+/**
+ * Returns an array which contains random elements of the source array
+ * @param {Array} array
+ * @returns {Array}
+ */
 function getRandomElements(array) {
   var arrayCopy = array.slice();
   arrayCopy.sort(function (a, b) {
@@ -54,6 +83,11 @@ function getRandomElements(array) {
   return arrayCopy.slice(0, getRandomValue(0, arrayCopy.length - 1));
 }
 
+/**
+ * Generates adverts
+ * @param {number} [limit] Number of adverts to generate
+ * @returns {Array} Generated adverts
+ */
 function generateOffers(limit) {
   limit = limit || 8;
   var pins = [];
@@ -62,41 +96,42 @@ function generateOffers(limit) {
     var locationX = getRandomValue(300, 900);
     var locationY = getRandomValue(100, 500);
     pins.push({
-      "author": {
-        "avatar": "img/avatars/user" + pad(normalizedIndex + 1) + ".png"
+      'author': {
+        'avatar': 'img/avatars/user' + pad(normalizedIndex + 1) + '.png'
       },
-      "offer": {
-        "title": offerTitles[normalizedIndex],
-        "address": locationX + ", " + locationY,
-        "price": getRandomValue(1000, 1000000),
-        "type": getRandomElement(offerTypes),
-        "rooms": getRandomValue(1, 5),
-        "guests": getRandomValue(1),
-        "checkin": getRandomElement(offerTimeSlots),
-        "checkout": getRandomElement(offerTimeSlots),
-        "features": getRandomElements(offerFeatures),
-        "description": "",
-        "photos": []
+      'offer': {
+        'title': offerTitles[normalizedIndex],
+        'address': locationX + ', ' + locationY,
+        'price': getRandomValue(1000, 1000000),
+        'type': getRandomElement(offerTypes),
+        'rooms': getRandomValue(1, 5),
+        'guests': getRandomValue(1),
+        'checkin': getRandomElement(offerTimeSlots),
+        'checkout': getRandomElement(offerTimeSlots),
+        'features': getRandomElements(offerFeatures),
+        'description': '',
+        'photos': []
       },
-      "location": {
-        "x": locationX,
-        "y": locationY
+      'location': {
+        'x': locationX,
+        'y': locationY
       }
-    })
+    });
   }
   return pins;
 }
 
+/**
+ * Draws pins on map
+ * @param {Array} offers
+ */
 function drawPins(offers) {
   var fragment = document.createDocumentFragment();
-  var container = document.querySelector('.tokyo__pin-map');
   offers.forEach(function (offer) {
     var pin = document.createElement('div');
     pin.className = 'pin';
-    var leftOffset = offer.location.x - 28;
-    var topOffset = offer.location.y - 75;
-    pin.style.left = leftOffset + 'px';
-    pin.style.top = topOffset + 'px';
+    pin.style.left = (offer.location.x - pinWidth / 2) + 'px';
+    pin.style.top = (offer.location.y - pinHeight) + 'px';
     var img = document.createElement('img');
     img.src = offer.author.avatar;
     img.className = 'rounded';
@@ -105,12 +140,14 @@ function drawPins(offers) {
     pin.appendChild(img);
     fragment.appendChild(pin);
   });
-  container.appendChild(fragment);
+  mapContainer.appendChild(fragment);
 }
 
+/**
+ * Draws information panel
+ * @param {Object} advert
+ */
 function drawPanel(advert) {
-  var dialog = document.querySelector('#offer-dialog');
-  var template = document.querySelector('#lodge-template');
   var panel = template.content.cloneNode(true);
   var featuresContainer = panel.querySelector('.lodge__features');
   panel.querySelector('.lodge__title').textContent = advert.offer.title;
@@ -126,7 +163,7 @@ function drawPanel(advert) {
   });
   panel.querySelector('.lodge__description').textContent = advert.offer.description;
   dialog.querySelector('.dialog__title img').src = advert.author.avatar;
-  dialog.replaceChild(panel, dialog.querySelector('.dialog__panel'))
+  dialog.replaceChild(panel, dialog.querySelector('.dialog__panel'));
 }
 
 var adverts = generateOffers();
