@@ -1,3 +1,5 @@
+'use strict';
+
 var offerTitles = [
   'Большая уютная квартира',
   'Маленькая неуютная квартира',
@@ -40,7 +42,7 @@ var template = document.querySelector('#lodge-template');
  * Returns a random number between min and max
  * @param {number} min Lower bound
  * @param {number} [max] Upper bound
- * @returns {number}
+ * @return {number}
  */
 function getRandomValue(min, max) {
   if (max) {
@@ -53,7 +55,7 @@ function getRandomValue(min, max) {
 /**
  * Returns string with leading zero
  * @param {number} number
- * @returns {string}
+ * @return {string}
  */
 function pad(number) {
   return number < 10
@@ -64,7 +66,7 @@ function pad(number) {
 /**
  * Returns random element of array
  * @param {Array} array
- * @returns {*}
+ * @return {*}
  */
 function getRandomElement(array) {
   return array[getRandomValue(0, array.length - 1)];
@@ -73,7 +75,7 @@ function getRandomElement(array) {
 /**
  * Returns an array which contains random elements of the source array
  * @param {Array} array
- * @returns {Array}
+ * @return {Array}
  */
 function getRandomElements(array) {
   var arrayCopy = array.slice();
@@ -86,7 +88,7 @@ function getRandomElements(array) {
 /**
  * Generates adverts
  * @param {number} [limit] Number of adverts to generate
- * @returns {Array} Generated adverts
+ * @return {Array} Generated adverts
  */
 function generateOffers(limit) {
   limit = limit || 8;
