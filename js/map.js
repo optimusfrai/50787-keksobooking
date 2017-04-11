@@ -182,7 +182,7 @@ function resetPins() {
   var activePins = document.querySelectorAll('.pin--active');
   activePins.forEach(function (pin) {
     pin.classList.remove('pin--active');
-  })
+  });
 }
 
 /**
