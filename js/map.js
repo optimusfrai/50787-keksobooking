@@ -36,6 +36,7 @@ var pinWidth = 56;
 var pinHeight = 75;
 var mapContainer = document.querySelector('.tokyo__pin-map');
 var dialog = document.querySelector('#offer-dialog');
+var dialogClose = document.querySelector('.dialog__close');
 var template = document.querySelector('#lodge-template');
 
 /**
@@ -125,21 +126,23 @@ function generateOffers(limit) {
 
 /**
  * Draws pins on map
- * @param {Array} offers
+ * @param {Array} adverts
  */
-function drawPins(offers) {
+function drawPins(adverts) {
   var fragment = document.createDocumentFragment();
-  offers.forEach(function (offer) {
+  adverts.forEach(function (advert) {
     var pin = document.createElement('div');
     pin.className = 'pin';
-    pin.style.left = (offer.location.x - pinWidth / 2) + 'px';
-    pin.style.top = (offer.location.y - pinHeight) + 'px';
+    pin.tabIndex = 0;
+    pin.style.left = (advert.location.x - pinWidth / 2) + 'px';
+    pin.style.top = (advert.location.y - pinHeight) + 'px';
     var img = document.createElement('img');
-    img.src = offer.author.avatar;
+    img.src = advert.author.avatar;
     img.className = 'rounded';
     img.width = 40;
     img.height = 40;
     pin.appendChild(img);
+    addPinListeners(pin, advert);
     fragment.appendChild(pin);
   });
   mapContainer.appendChild(fragment);
@@ -171,3 +174,72 @@ function drawPanel(advert) {
 var adverts = generateOffers();
 drawPins(adverts);
 drawPanel(adverts[0]);
+
+/**
+ * Removes a class 'pin--active' from all pins
+ */
+function resetPins() {
+  var activePins = document.querySelectorAll('.pin--active');
+  activePins.forEach(function (pin) {
+    pin.classList.remove('pin--active');
+  });
+}
+
+/**
+ * Adds the necessary listeners to pin DOM Element
+ * @param {Object} pin DOM Element
+ * @param {Object} advert Represents info about advert
+ */
+function addPinListeners(pin, advert) {
+  pin.addEventListener('click', function () {
+    openDialog(pin, advert);
+  });
+  pin.addEventListener('keydown', function (event) {
+    if (event.keyCode === 13) {
+      openDialog(pin, advert);
+    }
+  });
+}
+
+/**
+ * Esc press event handler
+ * @param {Object} event
+ */
+function onDialogEscPress(event) {
+  if (event.keyCode === 27) {
+    event.preventDefault();
+    closeDialog();
+  }
+}
+
+/**
+ * Shows details block
+ * @param {Object} pin DOM Element
+ * @param {Object} advert Represents info about advert
+ */
+function openDialog(pin, advert) {
+  resetPins();
+  pin.classList.add('pin--active');
+  drawPanel(advert);
+  dialog.removeAttribute('hidden');
+  document.addEventListener('keydown', onDialogEscPress);
+}
+
+/**
+ * Hide details block
+ */
+function closeDialog() {
+  resetPins();
+  dialog.setAttribute('hidden', 'hidden');
+  document.removeEventListener('keydown', onDialogEscPress);
+}
+
+dialogClose.addEventListener('click', function () {
+  closeDialog();
+});
+
+dialogClose.addEventListener('keydown', function (event) {
+  if (event.keyCode === 13) {
+    closeDialog();
+  }
+});
