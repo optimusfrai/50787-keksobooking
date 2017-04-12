@@ -29,13 +29,13 @@ timeOutSelect.addEventListener('change', function (event) {
 });
 
 typeSelect.addEventListener('change', function (event) {
-  if (MIN_PRICES[event.target.value] !== undefined) {
+  if (event.target.value in MIN_PRICES) {
     priceInput.setAttribute('min', MIN_PRICES[event.target.value]);
   }
 });
 
 roomsCountSelect.addEventListener('change', function (event) {
-  if (GUESTS[event.target.value] !== undefined) {
+  if (event.target.value in GUESTS) {
     guestsCountSelect.value = GUESTS[event.target.value];
   }
 });
