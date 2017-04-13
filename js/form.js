@@ -12,7 +12,7 @@ var GUESTS = {
   100: 3
 };
 
-var form = document.querySelector('.notice__form');
+var formElement = document.querySelector('.notice__form');
 var formSubmit = document.querySelector('.form__submit');
 var timeSelect = document.querySelector('#time');
 var timeOutSelect = document.querySelector('#timeout');
@@ -24,7 +24,7 @@ var priceInput = document.querySelector('#price');
 /**
  * Validates form
  * @param {Object} form <form> Element
- * @returns {boolean}
+ * @return {boolean}
  */
 function validateForm(form) {
   var elements = form.elements;
@@ -61,9 +61,9 @@ roomsCountSelect.addEventListener('change', function (event) {
 });
 
 formSubmit.addEventListener('click', function () {
-  validateForm(form)
+  validateForm(formElement);
 });
 
-form.addEventListener('submit', function () {
-  form.reset();
+formElement.addEventListener('submit', function () {
+  formElement.reset();
 });
